@@ -350,9 +350,9 @@
     const userId = tg.initDataUnsafe?.user?.id;
     if (!userId) return;
 
-    try {
-        // REPLACE this URL with your actual hosted backend URL later
-        await fetch('https://your-backend-url.com/api/sync', {
+ try {
+        // Change the URL to /api/server to match your Vercel backend
+        await fetch('/api/server', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -361,6 +361,9 @@
                 pph: state.pph
             })
         });
+        console.log("Data synced successfully!");
+    } catch (error) {
+        console.error("Sync failed:", error);
     } catch (e) {
         console.log("Server sync pending...");
     }
@@ -414,4 +417,5 @@ async function syncWithServer() {
     @keyframes fly { 0% { opacity:1; transform:translateY(0); } 100% { opacity:0; transform:translateY(-100px); } }
 </style>
 </body>
+
 </html>
