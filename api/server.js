@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Database connection logic for Serverless
+// 1. DATABASE CONNECTION
 let isConnected = false;
 const connectDB = async () => {
     if (isConnected) return;
@@ -19,16 +19,21 @@ const connectDB = async () => {
     }
 };
 
+// 2. USER MODEL (Fixed to prevent "OverwriteModelError")
 const UserSchema = new mongoose.Schema({
     telegramId: String,
     balance: Number,
     pph: Number,
     lastLogin: Date
 });
+const User = mongoose.models.User || mongoose.model('User', UserSchema);
 
-const User = mongoose.model('User', UserSchema);
+// 3. GET ROUTE (This fixes the "Cannot GET" error in browser)
+app.get('/api/server', (req, res) => {
+    res.status(200).send("✅ API is live! Send a POST request to sync data.");
+});
 
-// The Sync Route
+// 4. POST ROUTE (The Sync Route)
 app.post('/api/server', async (req, res) => {
     await connectDB();
     const { telegramId, balance, pph } = req.body;
@@ -45,5 +50,4 @@ app.post('/api/server', async (req, res) => {
     }
 });
 
-// CRITICAL: Export for Vercel
 module.exports = app;
